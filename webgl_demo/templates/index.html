@@ -100,10 +100,10 @@
             }
           },
           {
-            name: 'Cat Statue',
+            name: 'Bear',
             load: function(model) {
               stlLoader.load(
-                '{{ url_for('static', filename='cat-top.stl') }}',
+                '{{ url_for('static', filename='bear.stl') }}',
                 function(geometry) {
                   // Regenerate normals because they aren't loaded properly.
                   geometry.computeFaceNormals();
