@@ -2,7 +2,7 @@
    <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Adafruit BNO055 Absolute Orientation Sensor</title>
+        <title>Data Visualization</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -51,12 +51,6 @@
               <div class="form-group">
                 <button type="button" class="btn btn-primary" id="straighten">Straighten</button>
               </div>
-              <div class="form-group">
-                <button type="button" class="btn btn-primary" id="saveCalibration">Save Calibration</button>
-              </div>
-              <div class="form-group">
-                <button type="button" class="btn btn-primary" id="loadCalibration">Load Calibration</button>
-              </div>
             </form>
           </div>
         </div>
@@ -75,30 +69,9 @@
         // Set size of the WebGL renderer scene.
         var sceneWidth = 640;
         var sceneHeight = 480;
-        // Define list of 3D models.  Each item should have a name property that
-        // will be rendered in the drop down, and a load function that is called
         // with the model instance and should add a model property with a Three.js
         // scene graph object that will be rendered.
         var models = [
-          {
-            name: 'Bunny',
-            load: function(model) {
-              objMTLLoader.load(
-                '{{ url_for('static', filename='bunny.obj') }}',
-                '{{ url_for('static', filename='bunny.mtl') }}',
-                function(object) {
-                  var geom = object.children[1].geometry;
-                  // Rebuild geometry normals because they aren't loaded properly.
-                  geom.computeFaceNormals();
-                  geom.computeVertexNormals();
-                  // Build bunny mesh from geometry and material.
-                  model.model = new THREE.Mesh(geom, material);
-                  // Move the bunny so it's roughly in the center of the screen.
-                  model.model.position.y = -4;
-                }
-              );
-            }
-          },
           {
             name: 'Bear',
             load: function(model) {
@@ -231,20 +204,8 @@
           // on the current BNO sensor orientation.
           var currentQuat = new THREE.Quaternion(bnoData.quatX, bnoData.quatY, bnoData.quatZ, bnoData.quatW);
           offset.quaternion.copy(currentQuat.conjugate());
-        });
-
-        // Save calibration click handler calls the /save_calibration API.
-        $('#saveCalibration').click(function() {
-          $.post("{{ url_for('save_calibration') }}");
-        });
-        $('#saveCalibration').hide();
-
-        // Load calibration click handler calls the /load_calibration API.
-        $('#loadCalibration').click(function() {
-          $.post("{{ url_for('load_calibration') }}");
-        });
-        $('#loadCalibration').hide();
-
+      });
+      
         // Function called when a new sensor reading is received.
         function updateSensorData(data) {
           // Save the reading then update the UI.

@@ -105,28 +105,6 @@ def bno_path():
     # the webpage.
     return Response(bno_sse(), mimetype='text/event-stream')
 
-@app.route('/save_calibration', methods=['POST'])
-def save_calibration():
-    # Save calibration data to disk.
-    # First grab the lock on BNO sensor access to make sure nothing else is
-    # writing to the sensor right now.
-    with bno_changed:
-        data = bno.get_calibration()
-    # Write the calibration to disk.
-    with open(CALIBRATION_FILE, 'w') as cal_file:
-        json.dump(data, cal_file)
-    return 'OK'
-
-@app.route('/load_calibration', methods=['POST'])
-def load_calibration():
-    # Load calibration from disk.
-    with open(CALIBRATION_FILE, 'r') as cal_file:
-        data = json.load(cal_file)
-    # Grab the lock on BNO sensor access to serial access to the sensor.
-    with bno_changed:
-        bno.set_calibration(data)
-    return 'OK'
-
 @app.route('/')
 def root():
     return render_template('index.html')
