@@ -1,32 +1,3 @@
-# Adafruit BNO055 WebGL Example
-#
-# Requires the flask web framework to be installed.  See http://flask.pocoo.org/
-# for installation instructions, however on a Linux machine like the Raspberry
-# Pi or BeagleBone black you can likely install it by running:
-#  sudo apt-get update
-#  sudo apt-get install python3-flask
-#
-# Copyright (c) 2015 Adafruit Industries
-# Author: Tony DiCola
-# 2019 update: Carter Nelson
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
 import json
 import logging
 import threading
@@ -37,33 +8,15 @@ from flask import *
 import board
 import busio
 import adafruit_bno055
-i2c = busio.I2C(board.SCL, board.SDA)
 
-# Create the BNO sensor connection.
+i2c = busio.I2C(board.SCL, board.SDA)
 bno = adafruit_bno055.BNO055(i2c)
 
-# Application configuration below.  You probably don't need to change these values.
 
 # How often to update the BNO sensor data (in hertz).
 BNO_UPDATE_FREQUENCY_HZ = 10
-
-# Name of the file to store calibration data when the save/load calibration
-# button is pressed.  Calibration data is stored in JSON format.
 CALIBRATION_FILE = 'calibration.json'
 
-# BNO sensor axes remap values.  These are the parameters to the BNO.set_axis_remap
-# function.  Don't change these without consulting section 3.4 of the datasheet.
-# The default axes mapping below assumes the Adafruit BNO055 breakout is flat on
-# a table with the row of SDA, SCL, GND, VIN, etc pins facing away from you.
-#BNO_AXIS_REMAP = { 'x': BNO055.AXIS_REMAP_X,
-#                   'y': BNO055.AXIS_REMAP_Z,
-#                   'z': BNO055.AXIS_REMAP_Y,
-#                   'x_sign': BNO055.AXIS_REMAP_POSITIVE,
-#                   'y_sign': BNO055.AXIS_REMAP_POSITIVE,
-#                   'z_sign': BNO055.AXIS_REMAP_NEGATIVE }
-
-
-# Create flask application.
 app = Flask(__name__)
 
 # Global state to keep track of the latest readings from the BNO055 sensor.
