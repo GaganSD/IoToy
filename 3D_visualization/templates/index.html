@@ -82,8 +82,9 @@
                   geometry.computeFaceNormals();
                   geometry.computeVertexNormals();
                   // Load the model and build mesh.
+                  var material = new THREE.MeshBasicMaterial( {color:0xffff00} );
                   model.model = new THREE.Mesh(geometry, material);
-                  // Rotate, scale, and move so the cat is facing out the screen.
+                  // Rotate, scale, and move so the bear is facing out the screen.
                   model.model.rotation.x = -90 * (Math.PI / 180.0);
                   model.model.scale.set(0.15, 0.15, 0.15);
                   model.model.position.y = -4;
