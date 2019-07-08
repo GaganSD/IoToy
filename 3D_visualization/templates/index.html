@@ -82,7 +82,7 @@
                   geometry.computeFaceNormals();
                   geometry.computeVertexNormals();
                   // Load the model and build mesh.
-                  var material = new THREE.MeshBasicMaterial( {color:0xffff00} );
+                  var material = new THREE.MeshPhongMaterial({color:0x7F6000});
                   model.model = new THREE.Mesh(geometry, material);
                   // Rotate, scale, and move so the bear is facing out the screen.
                   model.model.rotation.x = -90 * (Math.PI / 180.0);
@@ -125,31 +125,59 @@
 
         // Setup Three.js scene and camera.
         var scene = new THREE.Scene();
+        //scene.background = new THREE.color(0xFF0000);
         var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 0.1, 1000);
         // Start with the camera moved back a bit to look directly at the origin.
         camera.position.z = 10;
 
         // Setup Three.js WebGL renderer and add it to the page.
-        var renderer = new THREE.WebGLRenderer();
+        var renderer = new THREE.WebGLRenderer( {alpha:true} );
         renderer.setSize(sceneWidth, sceneHeight);
-        renderer.setClearColor(0xff0000, 0);
+        renderer.setClearColor(0x696969, 0);
         $('#renderer').append(renderer.domElement);
         $('#renderer canvas').addClass('center-block');  // Center the renderer.
 
         // Create white material for the models.
-        var material = new THREE.MeshPhongMaterial({ color: 0xffffff });
+        var material = new THREE.MeshPhongMaterial({ color: 0x696969 });
 
         // Setup 3 point lighting with a red and blue point light in upper left
         // and right corners, plus a bit of backlight from the rear forward.
-        var pointLight1 = new THREE.PointLight(0xffbbbb, 0.6);
-        pointLight1.position.set(40, 15, 40);
-        scene.add(pointLight1);
-        var pointLight2 = new THREE.PointLight(0xbbbbff, 0.6);
-        pointLight2.position.set(-40, 15, 40);
-        scene.add(pointLight2);
-        var backLight = new THREE.DirectionalLight(0xffff, 0.3);
-        backLight.position.set(0, -0.25, -1);
-        scene.add(backLight);
+        
+	//#var light1 = new THREE.PointLight(0xffbbbb, 0.6);
+       	//#light1.position.set(40, 15, 40);
+	//#scene.add(light1);
+        
+	//#var pointLight2 = new THREE.PointLight(0xbbbbff, 0.6);
+        //#pointLight2.position.set(-40, 15, 40);
+        //scene.add(pointLight2);
+        
+	var light = new THREE.SpotLight(0xffffff);
+	light.position.set(-100, 200, 100);
+	scene.add(light);
+
+	var light2 = new THREE.SpotLight(0xffffff);
+	light2.position.set(100, 200, 100);
+        scene.add(light2);
+
+      
+
+        var lightD1 = new THREE.SpotLight(0xffffff);
+        lightD1.position.set(25, 150, 250)
+        scene.add(lightD1);
+
+     // var spotLight = new THREE.SpotLight(0xffffbb, 2);
+      //spotLight.position.set(0.5, 0, 1);
+      //scene.add( SpotLight);
+      
+        //var FrontLight = new THREE.PointLight(0xffffff);
+	//FrontLight.position.set(0, 0, 250);
+        //scene.add(FrontLight);
+
+      
+        //var FrontLight = new THREE.PointLight(0xffffff);
+	//FrontLight.position.set(0, 0, 100);
+        //scene.add(FrontLight);
+
 
         // Create a couple groups to apply rotations to the 3D model at different
         // stages.  The outer group called offset is set to the reverse rotation
