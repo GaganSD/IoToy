@@ -4,7 +4,7 @@ import threading
 import time
 
 from flask import *
-from paho.mqtt.client as mqtt
+import paho.mqtt.client as mqtt
 from Adafruit_BNO055 import BNO055
 
 # bno = BNO055.BNO055(serial_port='/dev/serial0', rst=18)
@@ -34,12 +34,6 @@ def read_bno():
     latest BNO orientation, etc. state.  Must be run in its own thread because
     it will never return!
     """
-    client = mqtt.Client('ReadAccData')
-    client.connect('192.168.5.1', 1883, 120)
-    client.subscribe('test/accdata')
-    client.on_message = on_message
-    client.loop_forever()
-
     def on_message(client, user_data, message):
         dataSTR = str(message.payload.decode())
         datalst = dataSTR.split(' ')
@@ -50,17 +44,27 @@ def read_bno():
         gyro = float(data[4])
         accel = float(data[5])
         mag = float(data[6])
-        temp = float(data[7])
-        x, y, z, w= float(data[8]), float(data[9]), float(data[10]), float(data[11])
+        #temp = float(data[7])
+        print("about to go in bno_changed")
+        x, y, z, w= float(data[7]), float(data[8]), float(data[9]), float(data[10])
         with bno_changed:
             bno_data['euler'] = (heading, roll, pitch)
             bno_data['temp'] = temp
             bno_data['quaternion'] = (x, y, z, w)
             bno_data['calibration'] = (sys, gyro, accel, mag)
             bno_data['temp'] = 20.0
+            print(bno_data)
+            print("bno_data should have printed")
             bno_changed.notifyAll()
         time.sleep(1.0/BNO_UPDATE_FREQUENCY_HZ)
-    
+    print("client here" )
+    client = mqtt.Client('ReadAccData')
+    client.connect('192.168.5.1', 1883, 120)
+    client.subscribe('test/accdata')
+    client.on_message = on_message
+    client.loop_forever()
+
+
     print("This should not be printed")
 
         
@@ -94,17 +98,22 @@ def bno_sse():
     # Loop forever waiting for a new BNO055 sensor reading and sending it to
     # the client.  Since this is a generator function the yield statement is
     # used to return a new result.
+    print("inside bno_sse")
     while True:
         # Capture the bno_changed condition lock and then wait for it to notify
         # a new reading is available.
         with bno_changed:
+            print("inside while loop")
             bno_changed.wait()
+            print("inside bno_changed")
             # A new reading is available!  Grab the reading value and then give
             # up the lock.
+            bno_data['euler']
             heading, roll, pitch = bno_data['euler']
             temp = bno_data['temp']
             x, y, z, w = bno_data['quaternion']
             sys, gyro, accel, mag = bno_data['calibration']
+            print(bno_data)
         # Send the data to the connected client in HTML5 server sent event format.
         data = {'heading': heading, 'roll': roll, 'pitch': pitch, 'temp': temp,
                 'quatX': x, 'quatY': y, 'quatZ': z, 'quatW': w,
@@ -121,9 +130,9 @@ def start_bno_thread():
     #   http://stackoverflow.com/questions/24617795/starting-thread-while-running-flask-with-debug
     global bno_thread
     # Initialize BNO055 sensor.
-    if not bno.begin():
-        raise RuntimeError('Failed to initialize BNO055!')
-    bno.set_axis_remap(**BNO_AXIS_REMAP)
+#    if not bno.begin():
+#        raise RuntimeError('Failed to initialize BNO055!')
+#    bno.set_axis_remap(**BNO_AXIS_REMAP)
     # Kick off BNO055 reading thread.
     bno_thread = threading.Thread(target=read_bno)
     bno_thread.daemon = True  # Don't let the BNO reading thread block exiting.
