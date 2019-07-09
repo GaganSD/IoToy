@@ -4,10 +4,10 @@ import threading
 import time
 
 from flask import *
-
+from paho.mqtt.client as mqtt
 from Adafruit_BNO055 import BNO055
 
-bno = BNO055.BNO055(serial_port='/dev/serial0', rst=18)
+# bno = BNO055.BNO055(serial_port='/dev/serial0', rst=18)
 
 BNO_UPDATE_FREQUENCY_HZ = 10
 CALIBRATION_FILE = 'calibration.json'
@@ -34,26 +34,56 @@ def read_bno():
     latest BNO orientation, etc. state.  Must be run in its own thread because
     it will never return!
     """
-    while True:
-        # Grab new BNO sensor readings.
-        temp = bno.read_temp()
-        heading, roll, pitch = bno.read_euler()
-        x, y, z, w = bno.read_quaternion()
-        sys, gyro, accel, mag = bno.get_calibration_status()
-        status, self_test, error = bno.get_system_status(run_self_test=False)
-        if error != 0:
-            print 'Error! Value: {0}'.format(error)
-        # Capture the lock on the bno_changed condition so the bno_data shared
-        # state can be updated.
+    client = mqtt.Client('ReadAccData')
+    client.connect('192.168.5.1', 1883, 120)
+    client.subscribe('test/accdata')
+    client.on_message = on_message
+    client.loop_forever()
+
+    def on_message(client, user_data, message):
+        dataSTR = str(message.payload.decode())
+        datalst = dataSTR.split(' ')
+        heading = float(data[0])
+        roll = float(data[1])
+        pitch = float(data[2])
+        sys = float(data[3])
+        gyro = float(data[4])
+        accel = float(data[5])
+        mag = float(data[6])
+        temp = float(data[7])
+        x, y, z, w= float(data[8]), float(data[9]), float(data[10]), float(data[11])
         with bno_changed:
             bno_data['euler'] = (heading, roll, pitch)
             bno_data['temp'] = temp
             bno_data['quaternion'] = (x, y, z, w)
             bno_data['calibration'] = (sys, gyro, accel, mag)
-            # Notify any waiting threads that the BNO state has been updated.
+            bno_data['temp'] = 20.0
             bno_changed.notifyAll()
-        # Sleep until the next reading.
         time.sleep(1.0/BNO_UPDATE_FREQUENCY_HZ)
+    
+    print("This should not be printed")
+
+        
+    # while True:
+    #     # Grab new BNO sensor readings.
+    #     temp = bno.read_temp()
+    #     heading, roll, pitch = bno.read_euler()
+    #     x, y, z, w = bno.read_quaternion()
+    #     sys, gyro, accel, mag = bno.get_calibration_status()
+    #     status, self_test, error = bno.get_system_status(run_self_test=False)
+    #     if error != 0:
+    #         print 'Error! Value: {0}'.format(error)
+    #     # Capture the lock on the bno_changed condition so the bno_data shared
+    #     # state can be updated.
+    #     with bno_changed:
+    #         bno_data['euler'] = (heading, roll, pitch)
+    #         bno_data['temp'] = temp
+    #         bno_data['quaternion'] = (x, y, z, w)
+    #         bno_data['calibration'] = (sys, gyro, accel, mag)
+    #         # Notify any waiting threads that the BNO state has been updated.
+    #         bno_changed.notifyAll()
+    #     # Sleep until the next reading.
+    #     time.sleep(1.0/BNO_UPDATE_FREQUENCY_HZ)
 
 def bno_sse():
     """Function to handle sending BNO055 sensor data to the client web browser
