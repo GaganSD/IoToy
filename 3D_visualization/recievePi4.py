@@ -2,7 +2,7 @@
 import logging
 import threading
 import time
-
+import keyboard
 from flask import *
 import paho.mqtt.client as mqtt
 from Adafruit_BNO055 import BNO055
@@ -37,6 +37,7 @@ def read_bno():
     def on_message(client, user_data, message):
         dataSTR = str(message.payload.decode())
         datalst = dataSTR.split(' ')
+        print(datalst)
         heading = float(data[0])
         roll = float(data[1])
         pitch = float(data[2])
@@ -49,6 +50,12 @@ def read_bno():
         x, y, z, w= float(data[7]), float(data[8]), float(data[9]), float(data[10])
         print("X, y, z, w")
         print(x, y, z, w)
+        if keyboard.is_pressed('q'):
+            print("'q' is pressed")
+            client.disconnect()
+            client.loop_stop()
+            bno_data.clear()
+            
         with bno_changed:
             bno_data['euler'] = (heading, roll, pitch)
             bno_data['temp'] = temp
@@ -60,14 +67,12 @@ def read_bno():
             bno_changed.notifyAll()
             print("Notified")
         time.sleep(1.0/BNO_UPDATE_FREQUENCY_HZ)
-    print("client here" )
+    print("Inside bno_changed" )
     client = mqtt.Client('ReadAccData')
     client.connect('192.168.5.1', 1883, 120)
     client.subscribe('test/accdata')
     client.on_message = on_message
     client.loop_forever()
-
-
     print("This should not be printed")
 
         
