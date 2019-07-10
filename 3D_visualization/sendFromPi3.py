@@ -34,8 +34,8 @@ while True:
     sys, gyro, accel, mag = bno.get_calibration_status()
     x, y, z, w = bno.read_quaternion()
     # Heading, Roll, Pitch, sys_cal, gyro_cal, accel_cal, mag_cal.
-    accel = bno.read_linear_acceleration()
-    magnitude = (accel[0]**2 +  accel[1]**2 + accel[2]**2)**(1/2)
+    #accel = bno.read_linear_acceleration()
+    #magnitude = (accel[0]**2 +  accel[1]**2 + accel[2]**2)**(1/2)
 
     publish.single("test/accdata",'{0} {1} {2} {3:.2f} {4:.2f} {5} {6} {7} {8} {9} {10}'.format(heading, roll, pitch, sys, gyro, accel, mag, x, y, z, w),hostname="192.168.5.1" )
     time.sleep(1)

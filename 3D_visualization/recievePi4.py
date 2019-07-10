@@ -1,4 +1,4 @@
- import json
+import json
 import logging
 import threading
 import time
@@ -37,8 +37,10 @@ def read_bno():
     def on_message(client, user_data, message):
         dataSTR = str(message.payload.decode())
         datalst = dataSTR.split(' ')
-        print(datalst)
+        #print("datalst check")
         heading = float(data[0])
+        print("heading")
+        print(heading)
         roll = float(data[1])
         pitch = float(data[2])
         sys = float(data[3])
@@ -57,6 +59,7 @@ def read_bno():
             bno_data.clear()
             
         with bno_changed:
+            print("inside bno_changed")
             bno_data['euler'] = (heading, roll, pitch)
             bno_data['temp'] = temp
             bno_data['quaternion'] = (x, y, z, w)
@@ -67,7 +70,7 @@ def read_bno():
             bno_changed.notifyAll()
             print("Notified")
         time.sleep(1.0/BNO_UPDATE_FREQUENCY_HZ)
-    print("Inside bno_changed" )
+    print("Inside client" )
     client = mqtt.Client('ReadAccData')
     client.connect('192.168.5.1', 1883, 120)
     client.subscribe('test/accdata')
