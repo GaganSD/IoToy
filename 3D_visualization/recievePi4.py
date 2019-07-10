@@ -1,4 +1,4 @@
-import json
+ import json
 import logging
 import threading
 import time
@@ -47,6 +47,8 @@ def read_bno():
         #temp = float(data[7])
         print("about to go in bno_changed")
         x, y, z, w= float(data[7]), float(data[8]), float(data[9]), float(data[10])
+        print("X, y, z, w")
+        print(x, y, z, w)
         with bno_changed:
             bno_data['euler'] = (heading, roll, pitch)
             bno_data['temp'] = temp
@@ -56,6 +58,7 @@ def read_bno():
             print(bno_data)
             print("bno_data should have printed")
             bno_changed.notifyAll()
+            print("Notified")
         time.sleep(1.0/BNO_UPDATE_FREQUENCY_HZ)
     print("client here" )
     client = mqtt.Client('ReadAccData')
@@ -114,6 +117,7 @@ def bno_sse():
             x, y, z, w = bno_data['quaternion']
             sys, gyro, accel, mag = bno_data['calibration']
             print(bno_data)
+            print("sending bno_data")
         # Send the data to the connected client in HTML5 server sent event format.
         data = {'heading': heading, 'roll': roll, 'pitch': pitch, 'temp': temp,
                 'quatX': x, 'quatY': y, 'quatZ': z, 'quatW': w,
