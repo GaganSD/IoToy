@@ -28,36 +28,34 @@ bno_changed = threading.Condition()
 # the first request is served (see start_bno_thread below).
 bno_thread = None
 
+global datalst, recievedCheck
 
-def read_bno():
-    """Function to read the BNO sensor and update the bno_data object with the
-    latest BNO orientation, etc. state.  Must be run in its own thread because
-    it will never return!
-    """
-    def on_message(client, user_data, message):
-        dataSTR = str(message.payload.decode())
-        datalst = dataSTR.split(' ')
-        #print("datalst check")
-        heading = float(data[0])
+recieved_check = False
+
+def send_bno():
+    time.sleep(1)
+    while True:
+        heading = float(datalst[0])
         print("heading")
         print(heading)
-        roll = float(data[1])
-        pitch = float(data[2])
-        sys = float(data[3])
-        gyro = float(data[4])
-        accel = float(data[5])
-        mag = float(data[6])
+        roll = float(datalst[1])
+        pitch = float(datalst[2])
+        sys = float(datalst[3])
+        gyro = float(datalst[4])
+        accel = float(datalst[5])
+        mag = float(datalst[6])
         #temp = float(data[7])
         print("about to go in bno_changed")
-        x, y, z, w= float(data[7]), float(data[8]), float(data[9]), float(data[10])
+        x, y, z, w= float(datalst[7]), float(datalst[8]), float(datalst[9]), float(datalst[10])
         print("X, y, z, w")
         print(x, y, z, w)
         if keyboard.is_pressed('q'):
+            # exit all threads
             print("'q' is pressed")
             client.disconnect()
             client.loop_stop()
             bno_data.clear()
-            
+            break
         with bno_changed:
             print("inside bno_changed")
             bno_data['euler'] = (heading, roll, pitch)
@@ -70,11 +68,27 @@ def read_bno():
             bno_changed.notifyAll()
             print("Notified")
         time.sleep(1.0/BNO_UPDATE_FREQUENCY_HZ)
+        
+
+
+    
+
+def read_bno():
+    """Function to read the BNO sensor and update the bno_data object with the
+    latest BNO orientation, etc. state.  Must be run in its own thread because
+    it will never return!
+    """
+    def on_message(client, user_data, message):
+        dataSTR = str(message.payload.decode())
+        datalst = dataSTR.split(' ')
+        #print("datalst check")
+
     print("Inside client" )
     client = mqtt.Client('ReadAccData')
     client.connect('192.168.5.1', 1883, 120)
     client.subscribe('test/accdata')
     client.on_message = on_message
+    sending_thread.start()
     client.loop_forever()
     print("This should not be printed")
 
@@ -147,6 +161,8 @@ def start_bno_thread():
 #    bno.set_axis_remap(**BNO_AXIS_REMAP)
     # Kick off BNO055 reading thread.
     bno_thread = threading.Thread(target=read_bno)
+    sending_thread = threading.Thread(target=send_bno)
+    sending_thread.daemon = True
     bno_thread.daemon = True  # Don't let the BNO reading thread block exiting.
     bno_thread.start()
 
