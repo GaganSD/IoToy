@@ -140,45 +140,8 @@
         $('#renderer').append(renderer.domElement);
         $('#renderer canvas').addClass('center-block');  // Center the renderer.
 
-        // Create white material for the models.
         var material = new THREE.MeshPhongMaterial({ color: 0xFFFFFF });
 
-        // Setup 3 point lighting with a red and blue point light in upper left
-        // and right corners, plus a bit of backlight from the rear forward.
-        
-	//var light1 = new THREE.PointLight(0x654321, 0.6);
-       	//light1.position.set(40, 15, 40);
-	//scene.add(light1);
-        
-	//var pointLight2 = new THREE.PointLight(0x654321, 0.6);
-        //pointLight2.position.set(-40, 15, 40);
-        //scene.add(pointLight2);
-
-       //var backLight = new THREE.PointLight(0x654321, 0.6);
-	//var light = new THREE.SpotLight(0xffffff);
-	//light.position.set(-100, 200, 100);
-	//scene.add(backLight);
-
-     // var spotLight = new THREE.SpotLight(0xffffbb, 2);
-      //spotLight.position.set(0.5, 0, 1);
-      //scene.add( SpotLight);
-      
-        //var FrontLight = new THREE.PointLight(0xffffff);
-	//FrontLight.position.set(0, 0, 250);
-        //scene.add(FrontLight);
-
-      
-        //var FrontLight = new THREE.PointLight(0xffffff);
-	//FrontLight.position.set(0, 0, 100);
-        //scene.add(FrontLight);
-
-
-        // Create a couple groups to apply rotations to the 3D model at different
-        // stages.  The outer group called offset is set to the reverse rotation
-        // of the current BNO orientation when the 'Straighten' button is clicked.
-        // This will force the model to center itself staring directly out of
-        // the screen.  The inner group called orientation will be rotated with
-        // the current BNO sensor orientation and cause the model to rotate.
         offset = new THREE.Group();
         orientation = new THREE.Group();
         offset.add(orientation);
@@ -202,36 +165,26 @@
         }
         render();
 
-        // Populate drop-down of 3D models and load all the models..
         $.each(models, function(index, model) {
-          // Populate drop-down.
           $('#model').append($("<option />").val(index).text(model.name));
-          // Kick off loading the model.
           model.load(model);
         });
 
         // Model list changed event.
         $('#model').change(function() {
-          // Remove the old model.
           orientation.remove(models[currentModel].model);
-          // Update the current model and add it to the scene.
           currentModel = $('#model')[0].selectedIndex;
           orientation.add(models[currentModel].model);
         });
 
         // Straighten button click handler.
         $('#straighten').click(function() {
-          // Get the current orientation of the BNO sensor and compute its
-          // conjugate or reverse rotation and apply it to the offset group.
-          // This will reset the 3D model so that it faces directly forward based
-          // on the current BNO sensor orientation.
           var currentQuat = new THREE.Quaternion(bnoData.quatX, bnoData.quatY, bnoData.quatZ, bnoData.quatW);
           offset.quaternion.copy(currentQuat.conjugate());
       });
       
-        // Function called when a new sensor reading is received.
+        // Updates reading in UI
         function updateSensorData(data) {
-          // Save the reading then update the UI.
           bnoData = data;
           $('#heading').text(data.heading);
           $('#roll').text(data.roll);
@@ -242,20 +195,17 @@
           $('#calMag').text(data.calMag);
         }
 
-        // Create server sent event connection to receive BNO sensor data.
         var server = new EventSource('/bno');
-        // Add server sent event handlers.
         server.onmessage = function(e) {
           // Update BNO sensor values.
           updateSensorData(JSON.parse(e.data));
         };
         server.onopen = function(e) {
-          // Hide connecting status and show controls when connection is made.
+          // Hide connecting & show status
           $('#connecting').hide();
           $('#controls').show();
         };
         server.onerror = function(e) {
-          // Hide controls and show connecting status if connection closes.
           $('#controls').hide();
           $('#connecting').show();
         };

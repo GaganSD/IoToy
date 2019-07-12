@@ -11,7 +11,6 @@ import threading
 import time
 from flask import *
 import paho.mqtt.client as mqtt
-from Adafruit_BNO055 import BNO055
 
 
 global datalst, recievedCheck
