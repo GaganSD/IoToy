@@ -26,6 +26,9 @@ recieved_check = False
 
 
 def send_bno():
+    """
+    Updates bno_data variable every .10 seconds
+    """
     time.sleep(3)
     global datalst
     while True:
@@ -46,9 +49,6 @@ def send_bno():
         time.sleep(1.0/BNO_UPDATE_FREQUENCY_HZ)
         
 
-
-    
-
 def read_bno():
     """
     Connects to the mqtt client & calls on_message
@@ -63,7 +63,6 @@ def read_bno():
     client.subscribe('test/accdata')
     client.on_message = on_message
     client.loop_forever()
-    print("This should not be printed")
 
 
 def bno_sse():
@@ -88,13 +87,10 @@ def bno_sse():
 
 @app.before_first_request
 def start_bno_thread():
-
-    # Start the BNO thread right before the first request is served.  This is
-    # necessary because in debug mode flask will start multiple main threads so
-    # this is the only spot to put code that can only run once after starting.
-    # See this SO question for more context:
-    #   http://stackoverflow.com/questions/24617795/starting-thread-while-running-flask-with-debug
-
+    """
+    Starts reading published data in a new thread,
+    changes variable in another thread
+    """
     global bno_thread
     bno_thread = threading.Thread(target=read_bno)
     sending_thread = threading.Thread(target=send_bno)
