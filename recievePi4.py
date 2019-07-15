@@ -46,7 +46,7 @@ def send_bno():
             bno_data['temp'] = 20.0
             bno_changed.notifyAll()
         time.sleep(1.0/BNO_UPDATE_FREQUENCY_HZ)
-        
+
 
 def read_bno():
     """
@@ -111,5 +111,5 @@ def root():
     return render_template('index.html')
 
 
-if __name__ == '__main__':    
-    app.run(host='0.0.0.0', debug=True, threaded=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=False, threaded=True)

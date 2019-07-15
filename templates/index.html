@@ -12,6 +12,7 @@
            body {background-color: rgb(196,28,89)}
            h1 { font-family: Delicious, Verdana, Geneva, Tahoma, sans-serif; color:white}
            h3 { font-family: Delicious, Verdana, Geneva, Tahoma, sans-serif; color:white}
+	   h4 { font-family: Delicious, Verdana, Geneva, Tahoma, sans-serif; color:white}
           body {
             padding-top: 50px;
             padding-bottom: 20px;
@@ -39,16 +40,9 @@
         </div>
         <div class="row" id="controls">
           <div class="col-sm-4">
-            <h3>Orientation (degrees):</h3>
             <h4>Heading = <span id="heading">0</span>; Roll = <span id="roll">0</span>; <span id="pitch">0</span></h4>
           <div class="col-sm-4">
-            <h3>Actions:</h3>
             <form>
-              <!-- <div class="form-group">
-                <label for="model">Model:
-                <select class="form-control" id="model">
-                </select>
-              </div> -->
               <div class="form-group">
                 <button type="button" class="btn btn-primary" id="straighten">Straighten</button>
               </div>
@@ -86,7 +80,6 @@
                   var mat = new THREE.MeshNormalMaterial( { color:0xff0000, transparent: true, opacity:1} );
  
                   // Load the model and build mesh.
-                  //var mat = new THREE.MeshPhongMaterial( { color:0x654321} );
                   model.model = new THREE.Mesh(geometry, mat);
                   // Rotate, scale, and move so the bear is facing out the screen.
                   model.model.rotation.x = -90 * (Math.PI / 180.0);
@@ -96,24 +89,6 @@
               );
             }
           }
-          // {
-          //   name: 'XYZ Axes',
-          //   load: function(model) {
-          //     // Build some cylinders and rotate them to form a cross of the XYZ axes.
-          //     model.model = new THREE.Group();
-          //     var xAxis = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 7, 32, 32),
-          //                                    material);
-          //     xAxis.rotation.z = 90.0*(Math.PI/180.0);
-          //     model.model.add(xAxis);
-          //     var yAxis = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 7, 32, 32),
-          //                                    material);
-          //     model.model.add(yAxis);
-          //     var zAxis = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 7, 32, 32),
-          //                                    material);
-          //     zAxis.rotation.x = 90.0*(Math.PI/180.0);
-          //     model.model.add(zAxis);
-          //   }
-          // }
         ];
 
         // Global state.
@@ -170,14 +145,7 @@
           $('#model').append($("<option />").val(index).text(model.name));
           model.load(model);
         });
-
-        // // Model list changed event.
-        // $('#model').change(function() {
-        //   orientation.remove(models[currentModel].model);
-        //   currentModel = $('#model')[0].selectedIndex;
-        //   orientation.add(models[currentModel].model);
-        // });
-
+	  
         // Straighten button click handler.
         $('#straighten').click(function() {
           var currentQuat = new THREE.Quaternion(bnoData.quatX, bnoData.quatY, bnoData.quatZ, bnoData.quatW);
