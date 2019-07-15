@@ -41,25 +41,14 @@
           <div class="col-sm-4">
             <h3>Orientation (degrees):</h3>
             <h4>Heading = <span id="heading">0</span>; Roll = <span id="roll">0</span>; <span id="pitch">0</span></h4>
-            <!-- <h4>Roll = </h4>
-            <h4>Pitch = </h4> -->
-          </div>
-          <div class="col-sm-4">
-            <h3>Calibration:</h3>
-            <!-- <h4>(0=uncalibrated, 3=fully calibrated)</h4>
-            <h4>System = <span id="calSys">0</span></h4>
-            <h4>Gyro = <span id="calGyro">0</span></h4>
-            <h4>Accelerometer = <span id="calAccel">0</span></h4>
-            <h4>Magnetometer = <span id="calMag">0</span></h4> -->
-          </div>
           <div class="col-sm-4">
             <h3>Actions:</h3>
             <form>
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label for="model">Model:
                 <select class="form-control" id="model">
                 </select>
-              </div>
+              </div> -->
               <div class="form-group">
                 <button type="button" class="btn btn-primary" id="straighten">Straighten</button>
               </div>
@@ -79,7 +68,7 @@
       $(document).ready(function() {
         // Configuration
         // Set size of the WebGL renderer scene.
-        var sceneWidth = screen.width;
+        var sceneWidth = 1125;
         var sceneHeight = 600;
         // with the model instance and should add a model property with a Three.js
         // scene graph object that will be rendered.
@@ -182,12 +171,12 @@
           model.load(model);
         });
 
-        // Model list changed event.
-        $('#model').change(function() {
-          orientation.remove(models[currentModel].model);
-          currentModel = $('#model')[0].selectedIndex;
-          orientation.add(models[currentModel].model);
-        });
+        // // Model list changed event.
+        // $('#model').change(function() {
+        //   orientation.remove(models[currentModel].model);
+        //   currentModel = $('#model')[0].selectedIndex;
+        //   orientation.add(models[currentModel].model);
+        // });
 
         // Straighten button click handler.
         $('#straighten').click(function() {
