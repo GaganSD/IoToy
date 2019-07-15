@@ -94,25 +94,25 @@
                 }
               );
             }
-          },
-          {
-            name: 'XYZ Axes',
-            load: function(model) {
-              // Build some cylinders and rotate them to form a cross of the XYZ axes.
-              model.model = new THREE.Group();
-              var xAxis = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 7, 32, 32),
-                                             material);
-              xAxis.rotation.z = 90.0*(Math.PI/180.0);
-              model.model.add(xAxis);
-              var yAxis = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 7, 32, 32),
-                                             material);
-              model.model.add(yAxis);
-              var zAxis = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 7, 32, 32),
-                                             material);
-              zAxis.rotation.x = 90.0*(Math.PI/180.0);
-              model.model.add(zAxis);
-            }
           }
+          // {
+          //   name: 'XYZ Axes',
+          //   load: function(model) {
+          //     // Build some cylinders and rotate them to form a cross of the XYZ axes.
+          //     model.model = new THREE.Group();
+          //     var xAxis = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 7, 32, 32),
+          //                                    material);
+          //     xAxis.rotation.z = 90.0*(Math.PI/180.0);
+          //     model.model.add(xAxis);
+          //     var yAxis = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 7, 32, 32),
+          //                                    material);
+          //     model.model.add(yAxis);
+          //     var zAxis = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 7, 32, 32),
+          //                                    material);
+          //     zAxis.rotation.x = 90.0*(Math.PI/180.0);
+          //     model.model.add(zAxis);
+          //   }
+          // }
         ];
 
         // Global state.

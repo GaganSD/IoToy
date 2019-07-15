@@ -58,7 +58,7 @@ def read_bno():
         global datalst
         datalst = dataSTR.split(' ')
     client = mqtt.Client('ReadAccData')
-    client.connect('192.168.5.1', 1883, 120)
+    client.connect('192.168.4.1', 1883, 120)
     client.subscribe('test/accdata')
     client.on_message = on_message
     client.loop_forever()
