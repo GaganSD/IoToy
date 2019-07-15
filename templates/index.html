@@ -8,10 +8,22 @@
 
         <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
         <style>
-            body {
-              padding-top: 50px;
-              padding-bottom: 20px;
-            }
+           @font-face { font-family: Delicious; src: url('simplifica.ttf'); } 
+           body {background-color: rgb(196,28,89)}
+           h1 { font-family: Delicious, Verdana, Geneva, Tahoma, sans-serif; color:white}
+           h3 { font-family: Delicious, Verdana, Geneva, Tahoma, sans-serif; color:white}
+          body {
+            padding-top: 50px;
+            padding-bottom: 20px;
+          }
+
+          #renderer {
+            -webkit-box-shadow: 0 8px 6px -6px black;
+	          -moz-box-shadow: 0 8px 6px -6px black;
+	          box-shadow: 0 8px 6px -6px black;
+          }
+
+
         </style>
 
     </head>
@@ -19,8 +31,8 @@
       <div class="container">
         <div class="row">
           <div class="col-sm-12">
-            <h1 class="text-center">Data Visualization</h1>
-            <h3 id="connecting">Connecting...</h3>
+            <h1 class="text-center">DATA VISUALIZATION</h1>
+            <h3 id="connecting">CONNECTING...</h3>
             <div class="col-sm-12" id="renderer">
             </div>
           </div>
@@ -28,17 +40,17 @@
         <div class="row" id="controls">
           <div class="col-sm-4">
             <h3>Orientation (degrees):</h3>
-            <h4>Heading = <span id="heading">0</span></h4>
-            <h4>Roll = <span id="roll">0</span></h4>
-            <h4>Pitch = <span id="pitch">0</span></h4>
+            <h4>Heading = <span id="heading">0</span>; Roll = <span id="roll">0</span>; <span id="pitch">0</span></h4>
+            <!-- <h4>Roll = </h4>
+            <h4>Pitch = </h4> -->
           </div>
           <div class="col-sm-4">
             <h3>Calibration:</h3>
-            <h4>(0=uncalibrated, 3=fully calibrated)</h4>
+            <!-- <h4>(0=uncalibrated, 3=fully calibrated)</h4>
             <h4>System = <span id="calSys">0</span></h4>
             <h4>Gyro = <span id="calGyro">0</span></h4>
             <h4>Accelerometer = <span id="calAccel">0</span></h4>
-            <h4>Magnetometer = <span id="calMag">0</span></h4>
+            <h4>Magnetometer = <span id="calMag">0</span></h4> -->
           </div>
           <div class="col-sm-4">
             <h3>Actions:</h3>
@@ -67,8 +79,8 @@
       $(document).ready(function() {
         // Configuration
         // Set size of the WebGL renderer scene.
-        var sceneWidth = 640;
-        var sceneHeight = 480;
+        var sceneWidth = screen.width;
+        var sceneHeight = 600;
         // with the model instance and should add a model property with a Three.js
         // scene graph object that will be rendered.
         var models = [
@@ -136,7 +148,7 @@
         // Setup Three.js WebGL renderer and add it to the page.
         var renderer = new THREE.WebGLRenderer( {alpha:true} );
         renderer.setSize(sceneWidth, sceneHeight);
-        renderer.setClearColor(0xFFFF00, 1);
+        renderer.setClearColor(0x050B2B, 1);
         $('#renderer').append(renderer.domElement);
         $('#renderer canvas').addClass('center-block');  // Center the renderer.
 
@@ -189,10 +201,10 @@
           $('#heading').text(data.heading);
           $('#roll').text(data.roll);
           $('#pitch').text(data.pitch);
-          $('#calSys').text(data.calSys);
-          $('#calGyro').text(data.calGyro);
-          $('#calAccel').text(data.calAccel);
-          $('#calMag').text(data.calMag);
+          // $('#calSys').text(data.calSys);
+          // $('#calGyro').text(data.calGyro);
+          // $('#calAccel').text(data.calAccel);
+          // $('#calMag').text(data.calMag);
         }
 
         var server = new EventSource('/bno');
