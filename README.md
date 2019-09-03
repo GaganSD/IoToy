@@ -1,3 +1,7 @@
-# 3drender:
+# IoToy 3D Render:
 
-Collects data from accelerometer & raspberry pi zero and sends it to a Raspberry pi 4 to render a 3D Teddy Bear that can be controlled with the accelerometer. Written with JavaScript and Python.
+A project I made for [University of Edinburgh's IoT Research and Innovation services](http://iot.ed.ac.uk/) during my time as a software Engineer intern. This software is now widely used in primary and secondary schools across Edinburgh to aid workshops in **data science** and **Internet of Things**.
+
+A raspberry pi Zero is connected to an accelerometer and hosts an MQTT server. We can use the **recievePi4.py** python file on our laptop to run a real-time 3D rendering of a teddy bear.
+
+![Screenshot of teddy bear](screenshot-teddy.png)
