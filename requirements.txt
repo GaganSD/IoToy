@@ -1,0 +1,6 @@
+flask
+paho
+json
+threading
+Adafruit_BNO055
+numpy
