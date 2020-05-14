@@ -29,7 +29,7 @@ def send_bno():
     Updates bno_data variable every .10 seconds
     """
     time.sleep(3)
-    global datalst
+
     while True:
         heading = float(datalst[0])
         roll = float(datalst[1])
