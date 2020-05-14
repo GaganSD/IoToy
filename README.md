@@ -4,4 +4,7 @@ A project I made for [University of Edinburgh's IoT Research and Innovation serv
 
 A raspberry pi Zero is connected to an accelerometer and hosts an MQTT server. We can use the **recievePi4.py** python file on our laptop to run a real-time 3D rendering of a teddy bear.
 
+A working demo can be found [here](https://www.youtube.com/watch?v=ObJK_eU24yU)
+
 ![Screenshot of teddy bear](screenshot-teddy.png)
+
