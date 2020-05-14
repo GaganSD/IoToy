@@ -9,7 +9,7 @@ import json
 import logging
 import threading
 import time
-from flask import *
+import flask
 import paho.mqtt.client as mqtt
 
 
@@ -28,9 +28,13 @@ def send_bno():
     """
     Updates bno_data variable every .10 seconds
     """
+    # 3 seconds is allocated to get recieve the data from 
+    # raspberry pi zero
     time.sleep(3)
 
     while True:
+        # accelerometer values
+        # Theory: https://stackoverflow.com/questions/5871429/accelerometer-data-how-to-interpret
         heading = float(datalst[0])
         roll = float(datalst[1])
         pitch = float(datalst[2])
@@ -39,12 +43,15 @@ def send_bno():
         accel = float(datalst[5])
         mag = float(datalst[6])
         x, y, z, w= float(datalst[7]), float(datalst[8]), float(datalst[9]), float(datalst[10])
+        
         with bno_changed:
             bno_data['euler'] = (heading, roll, pitch)
             bno_data['quaternion'] = (x, y, z, w)
             bno_data['calibration'] = (sys, gyro, accel, mag)
             bno_data['temp'] = 20.0
             bno_changed.notifyAll()
+        
+        # sends data every .10 seconds
         time.sleep(1.0/BNO_UPDATE_FREQUENCY_HZ)
 
 
@@ -53,13 +60,16 @@ def read_bno():
     Connects to the mqtt client & calls on_message
     updates dataSTR variable
     """
+
     def on_message(client, user_data, message):
         dataSTR = str(message.payload.decode())
         global datalst
         datalst = dataSTR.split(' ')
+
     client = mqtt.Client('ReadAccData')
     client.connect('192.168.4.1', 1883, 120)
     client.subscribe('test/accdata')
+    
     client.on_message = on_message
     client.loop_forever()
 
@@ -70,17 +80,21 @@ def bno_sse():
     server push.
     """
     while True:
+
         with bno_changed:
+        
             bno_changed.wait()
             bno_data['euler']
             heading, roll, pitch = bno_data['euler']
             temp = bno_data['temp']
             x, y, z, w = bno_data['quaternion']
             sys, gyro, accel, mag = bno_data['calibration']
-        # Send the data to the connected client in HTML5 server sent event format.
+        
+        # Send the data to the connected client to index.html in a json format.
         data = {'heading': heading, 'roll': roll, 'pitch': pitch, 'temp': temp,
                 'quatX': x, 'quatY': y, 'quatZ': z, 'quatW': w,
                 'calSys': sys, 'calGyro': gyro, 'calAccel': accel, 'calMag': mag }
+        
         yield 'data: {0}\n\n'.format(json.dumps(data))
 
 
